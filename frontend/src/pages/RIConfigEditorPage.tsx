@@ -56,6 +56,7 @@ export default function RIConfigEditorPage() {
   const [rows, setRows] = useState<GridRow[]>([])
   const [xperiodCodes, setXperiodCodes] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
+  const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null)
 
   // Fix 2: XPeriod master list — backend returns plain array, not {items:[]}
   const [availableXperiods, setAvailableXperiods] = useState<XPeriod[]>([])
@@ -134,6 +135,7 @@ export default function RIConfigEditorPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setSaveMsg(null)
     try {
       const req = {
         config_name: config.config_name || '',
@@ -145,11 +147,17 @@ export default function RIConfigEditorPage() {
         xperiod_codes: xperiodCodes.filter(Boolean),
       }
       if (isNew) {
-        const created = await riApi.createConfig(req)
-        navigate(`/ri/configs/${created.config_id}`)
+        await riApi.createConfig(req)
+        // Navigate to entry selector so user immediately sees the new config
+        navigate('/ri/entries/new')
       } else {
         await riApi.updateConfig(id!, req)
+        setSaveMsg({ ok: true, text: `Đã lưu "${config.config_name}" thành công.` })
+        setTimeout(() => setSaveMsg(null), 4000)
       }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      setSaveMsg({ ok: false, text: `Lỗi khi lưu: ${msg}` })
     } finally {
       setSaving(false)
     }
@@ -236,18 +244,32 @@ export default function RIConfigEditorPage() {
 
         <div style={{ flex: 1 }} />
 
+        {/* Save message inline */}
+        {saveMsg && (
+          <span style={{
+            fontSize: 12, padding: '4px 10px', borderRadius: 4, fontWeight: 500,
+            background: saveMsg.ok ? '#dcfce7' : '#fee2e2',
+            color: saveMsg.ok ? '#166534' : '#991b1b',
+            border: `1px solid ${saveMsg.ok ? '#86efac' : '#fca5a5'}`,
+          }}>
+            {saveMsg.ok ? '✓ ' : '✗ '}{saveMsg.text}
+          </span>
+        )}
+
         {/* Actions */}
         {!isSeed && (
           <button
             onClick={handleSave}
             disabled={saving || !config.config_name}
+            title={!config.config_name ? 'Nhập tên config trước' : undefined}
             style={{
-              padding: '5px 16px', background: saving ? '#9ca3af' : '#2563eb',
-              color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer',
+              padding: '5px 16px', background: saving ? '#9ca3af' : (!config.config_name ? '#d1d5db' : '#2563eb'),
+              color: '#fff', border: 'none', borderRadius: 4,
+              cursor: saving || !config.config_name ? 'not-allowed' : 'pointer',
               fontSize: 13, fontWeight: 600,
             }}
           >
-            {saving ? 'Saving…' : '💾 Save'}
+            {saving ? 'Đang lưu…' : '💾 Save'}
           </button>
         )}
         {!isNew && (
@@ -262,10 +284,16 @@ export default function RIConfigEditorPage() {
           </button>
         )}
         <button
-          onClick={() => navigate('/ri/configs')}
+          onClick={() => navigate('/ri/entries/new')}
           style={{ padding: '5px 12px', border: '1px solid #d1d5db', borderRadius: 4, cursor: 'pointer', background: '#fff', fontSize: 13 }}
         >
-          ✕ Cancel
+          ← Entries
+        </button>
+        <button
+          onClick={() => navigate('/ri/configs')}
+          style={{ padding: '5px 12px', border: '1px solid #d1d5db', borderRadius: 4, cursor: 'pointer', background: '#fff', fontSize: 13, color: '#6b7280' }}
+        >
+          Configs
         </button>
       </div>
 

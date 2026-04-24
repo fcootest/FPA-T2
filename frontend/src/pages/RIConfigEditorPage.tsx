@@ -206,12 +206,12 @@ export default function RIConfigEditorPage() {
           <input
             value={config.config_code || ''}
             onChange={e => setConfig(p => ({ ...p, config_code: e.target.value }))}
-            disabled={isSeed || !isNew}
+            disabled={isSeed}
             placeholder="e.g. RI-GH-01"
             style={{
               border: '1px solid #d1d5db', borderRadius: 4, padding: '3px 7px',
               fontSize: 13, width: 110,
-              background: (isSeed || !isNew) ? '#f9fafb' : '#fff',
+              background: isSeed ? '#f9fafb' : '#fff',
             }}
           />
         </div>

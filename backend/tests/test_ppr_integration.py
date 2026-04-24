@@ -108,7 +108,7 @@ class TestRICellPeriodToMonth:
     def test_yf_spread_produces_12_months(self):
         """YF = 12 months."""
         yb = _make_yb("KRF", "Spread")
-        xp = _make_xperiod("Y2612", "YF")
+        xp = _make_xperiod("Y26", "YF")
         cell = _make_ri_cell(yb, xp, 1200.0)
         months = RICell_PeriodToMonth(cell, yb, xp)
         assert len(months) == 12

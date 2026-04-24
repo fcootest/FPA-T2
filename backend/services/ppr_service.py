@@ -75,6 +75,24 @@ def RICell_PeriodToMonth(ri_cell: RICell, yb_full: YBFull, xperiod: XPeriod) -> 
 # PPR-2: RICellToRIRow()  (AP §5.8.2)
 # ---------------------------------------------------------------------------
 
+def _decompose_zb_full_code(zb_full_code: str) -> dict[str, str]:
+    """Split ZBFull code into 7 master components. AP §5.2.
+    Format: {cat}-{pck}-{src}-{ff}-{alt}-{scn}-{run} where run may contain '-'.
+    """
+    parts = zb_full_code.split('-', 6)  # maxsplit=6 keeps run_code intact
+    if len(parts) < 7:
+        return {}
+    return {
+        "cat_code": parts[0],
+        "pck_code": parts[1],
+        "src_code": parts[2],
+        "ff_code":  parts[3],
+        "alt_code": parts[4],
+        "scn_code": parts[5],
+        "run_code": parts[6],
+    }
+
+
 def RICellToRIRow(ri_cells_month: list[RICellMonth]) -> list[RIRow]:
     """
     Group RICellMonth by (zb_full_code, yb_full_code) → 1 RIRow per group.
@@ -85,12 +103,14 @@ def RICellToRIRow(ri_cells_month: list[RICellMonth]) -> list[RIRow]:
     for c in ri_cells_month:
         key = (c.zb_full_code, c.yb_full_code)
         if key not in rows_map:
+            decomposed = _decompose_zb_full_code(c.zb_full_code)
             rows_map[key] = RIRow(
                 row_id=str(uuid.uuid4()),
                 zb_full_code=c.zb_full_code,
                 yb_full_code=c.yb_full_code,
                 monthly_values={},
                 uploaded_at=_now(),
+                **decomposed,
             )
         rows_map[key].monthly_values[c.month_code] = c.value
 
@@ -118,6 +138,7 @@ def WriteSORow(ri_row: RIRow, client: bigquery.Client) -> SORow:
         "upload_batch_id":            ri_row.upload_batch_id or "",
         "uploaded_at":                _now().isoformat(),
         "z_block_zblock1_category":   ri_row.cat_code,
+        "z_block_zblock1_pack":       ri_row.pck_code,   # ID-01 fix
         "z_block_zblock1_scenario":   ri_row.scn_code,
         "z_block_zblock1_source":     ri_row.src_code,
         "z_block_zblock1_frequency":  ri_row.ff_code,
@@ -143,6 +164,7 @@ def WriteSORow(ri_row: RIRow, client: bigquery.Client) -> SORow:
         upload_batch_id=ri_row.upload_batch_id or "",
         uploaded_at=_now(),
         z_block_zblock1_category=ri_row.cat_code,
+        z_block_zblock1_pack=ri_row.pck_code,
         z_block_zblock1_scenario=ri_row.scn_code,
         z_block_zblock1_source=ri_row.src_code,
         z_block_zblock1_frequency=ri_row.ff_code,

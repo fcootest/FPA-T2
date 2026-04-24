@@ -5,12 +5,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.core.bq_client import get_bq_client
 from backend.core.config import settings
+from backend.migrations.bq_migrate import ensure_tables
 from backend.routers import ri_config, ri_entry, ri_masters
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    get_bq_client()
+    client = get_bq_client()
+    ensure_tables(client)
     yield
 
 

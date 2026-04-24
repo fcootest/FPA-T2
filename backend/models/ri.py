@@ -341,6 +341,7 @@ class SORow(BaseModel):
     upload_batch_id: str = ""
     uploaded_at: datetime | None = None
     z_block_zblock1_category: str = ""
+    z_block_zblock1_pack: str = ""
     z_block_zblock1_scenario: str = ""
     z_block_zblock1_source: str = ""
     z_block_zblock1_frequency: str = ""

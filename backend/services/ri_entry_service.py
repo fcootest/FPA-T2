@@ -198,6 +198,41 @@ def _get_entry(client: bigquery.Client, entry_id: str) -> RIScreenEntry:
     )
 
 
+def _get_entry_cells(client: bigquery.Client, entry_id: str) -> list[RICell]:
+    """Load persisted RICell rows for an entry from so_cell_v1. AP §2.4 #8."""
+    query = f"""
+        SELECT * FROM `{SO_CELL_TABLE}`
+        WHERE entry_id = @entry_id
+    """
+    job_config = bigquery.QueryJobConfig(query_parameters=[
+        bigquery.ScalarQueryParameter("entry_id", "STRING", entry_id)
+    ])
+    rows = list(client.query(query, job_config=job_config).result())
+    return [
+        RICell(
+            cell_id=r.cell_id,
+            entry_id=r.entry_id,
+            yb_full_code=r.yb_full_code,
+            xperiod_code=r.xperiod_code,
+            zb_full_code=r.zb_full_code,
+            now_value=float(r.now_value or 0),
+            now_y_block_fnf_fnf=r.now_y_block_fnf_fnf or "",
+            time_col_name=r.time_col_name or "",
+        )
+        for r in rows
+    ]
+
+
+def get_entry_with_cells(client: bigquery.Client, entry_id: str) -> dict:
+    """GET /api/ri/entries/{id} — returns entry + cells. AP §2.4 #8."""
+    entry = _get_entry(client, entry_id)
+    cells = _get_entry_cells(client, entry_id)
+    return {
+        "entry": entry.model_dump(mode="json"),
+        "cells": [c.model_dump(mode="json") for c in cells],
+    }
+
+
 def _load_config_yb_xp(client: bigquery.Client, config_id: str) -> tuple[list[YBFull], list[XPeriod]]:
     """Load YBFull + XPeriod rows for a config."""
     yb_query = f"""

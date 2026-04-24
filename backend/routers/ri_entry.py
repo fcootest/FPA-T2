@@ -38,9 +38,9 @@ async def save_entry(req: SaveEntryRequest):
 
 @router.get("/{entry_id}")
 async def get_entry(entry_id: str):
-    """GET /api/ri/entries/{id}. AP §2.4 #8."""
+    """GET /api/ri/entries/{id} — returns entry + cells. AP §2.4 #8."""
     client = get_bq_client()
-    return entry_svc._get_entry(client, entry_id).model_dump(mode="json")
+    return entry_svc.get_entry_with_cells(client, entry_id)
 
 
 @router.post("/{entry_id}/prepare")

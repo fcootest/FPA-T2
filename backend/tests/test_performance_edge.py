@@ -66,7 +66,7 @@ class TestPerformance:
             _make_xp("M2601", "MF"),
             _make_xp("Q2603", "QF"),
             _make_xp("H2606", "HF"),
-            _make_xp("Y2612", "YF"),
+            _make_xp("Y26", "YF"),
         ]
 
         cells = [
@@ -184,7 +184,7 @@ class TestEdgeCases:
 
     def test_yf_expand_exactly_12_months(self):
         """YF = exactly 12 months (not 11, not 13)."""
-        xp = _make_xp("Y2612", "YF")
+        xp = _make_xp("Y26", "YF")
         months = xp.expand_to_months()
         assert len(months) == 12
 

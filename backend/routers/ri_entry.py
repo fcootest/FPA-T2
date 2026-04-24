@@ -3,7 +3,7 @@ RIScreenEntry router — Steps 10, 14, 17.
 AP §2.4 endpoints #6-8 + §5.9.4 #18-19.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
 from typing import Literal
 
@@ -30,10 +30,10 @@ async def get_entry_template(config_id: str):
 
 
 @router.post("")
-async def save_entry(req: SaveEntryRequest):
+async def save_entry(req: SaveEntryRequest, background_tasks: BackgroundTasks):
     """POST /api/ri/entries — 1 Save → 3 RIScreenEntry (OPT/REAL/PESS). AP §2.4 #7, P06."""
     client = get_bq_client()
-    return entry_svc.save_entry(client, req)
+    return entry_svc.save_entry(client, req, background_tasks)
 
 
 @router.get("/{entry_id}")

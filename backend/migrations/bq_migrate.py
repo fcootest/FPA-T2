@@ -70,50 +70,64 @@ SCHEMAS: dict[str, list[bigquery.SchemaField]] = {
     ],
     # Master tables (shared across configs)
     "master_cat": [
-        _SF("code", "STRING", mode="REQUIRED"),
-        _SF("name", "STRING"),
+        _SF("code",        "STRING", mode="REQUIRED"),
+        _SF("name",        "STRING"),
         _SF("description", "STRING"),
+        _SF("is_active",   "BOOL"),
     ],
     "master_pck": [
-        _SF("code", "STRING", mode="REQUIRED"),
-        _SF("name", "STRING"),
+        _SF("code",        "STRING", mode="REQUIRED"),
+        _SF("name",        "STRING"),
         _SF("description", "STRING"),
+        _SF("is_active",   "BOOL"),
     ],
     "master_src": [
-        _SF("code", "STRING", mode="REQUIRED"),
-        _SF("name", "STRING"),
+        _SF("code",        "STRING", mode="REQUIRED"),
+        _SF("name",        "STRING"),
         _SF("description", "STRING"),
+        _SF("is_active",   "BOOL"),
     ],
     "master_ff": [
-        _SF("code", "STRING", mode="REQUIRED"),  # MF / QF / HF / YF
-        _SF("name", "STRING"),
+        _SF("code",        "STRING", mode="REQUIRED"),  # MF / QF / HF / YF
+        _SF("name",        "STRING"),
         _SF("description", "STRING"),
+        _SF("is_active",   "BOOL"),
     ],
     "master_alt": [
-        _SF("code", "STRING", mode="REQUIRED"),  # PLA4 / ...
-        _SF("name", "STRING"),
+        _SF("code",        "STRING", mode="REQUIRED"),  # PLA4 / ...
+        _SF("name",        "STRING"),
         _SF("description", "STRING"),
+        _SF("is_active",   "BOOL"),
     ],
     "master_scn": [
-        _SF("code", "STRING", mode="REQUIRED"),  # OPT / REAL / PESS
-        _SF("name", "STRING"),
-        _SF("scn_type", "STRING"),
+        _SF("code",      "STRING", mode="REQUIRED"),  # OPT / REAL / PESS
+        _SF("name",      "STRING"),
+        _SF("scn_type",  "STRING"),
+        _SF("is_active", "BOOL"),
     ],
     "master_xperiod": [
         _SF("xperiod_code", "STRING", mode="REQUIRED"),
         _SF("period_type",  "STRING"),
         _SF("label",        "STRING"),
         _SF("sort_order",   "INT64"),
+        _SF("is_active",    "BOOL"),
     ],
     "master_kr_item": [
         _SF("kr_item_code", "STRING", mode="REQUIRED"),
         _SF("level_code",   "STRING"),
         _SF("name",         "STRING"),
+        _SF("is_active",    "BOOL"),
     ],
     "master_filter_item": [
         _SF("filter_item_code", "STRING", mode="REQUIRED"),
         _SF("level_code",       "STRING"),
         _SF("name",             "STRING"),
+        _SF("is_active",        "BOOL"),
+    ],
+    "master_run": [
+        _SF("run_code",   "STRING", mode="REQUIRED"),
+        _SF("run_ts",     "TIMESTAMP"),
+        _SF("created_by", "STRING"),
     ],
 }
 

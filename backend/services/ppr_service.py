@@ -307,8 +307,9 @@ def load_for_ui(
     )
 
     query = f"""
-        SELECT so_row_id, z_block_zblock1_category, z_block_zblock1_scenario,
-               z_block_zblock1_source, z_block_zblock1_frequency, z_block_zblock1_run,
+        SELECT so_row_id, z_block_zblock1_category, z_block_zblock1_pack,
+               z_block_zblock1_scenario, z_block_zblock1_source,
+               z_block_zblock1_frequency, z_block_zblock1_run,
                now_zblock2_alt, now_y_block_fnf_fnf,
                {month_col_selects}
         FROM `{SO_ROWS_TABLE}`

@@ -11,9 +11,10 @@ router = APIRouter(prefix="/api/ri/masters", tags=["ri-masters"])
 DATASET = "Config_FPA_T"
 
 
-def _query(client, table: str, order: str = "code") -> list[dict]:
+def _query(client, table: str, order: str = "code", active_only: bool = True) -> list[dict]:
     full = f"{client.project}.{DATASET}.{table}"
-    rows = client.query(f"SELECT * FROM `{full}` ORDER BY {order}").result()
+    where = "WHERE is_active = TRUE" if active_only else ""
+    rows = client.query(f"SELECT * FROM `{full}` {where} ORDER BY {order}").result()
     return [dict(r) for r in rows]
 
 
@@ -60,3 +61,8 @@ async def get_filter_items():
 @router.get("/xperiods")
 async def get_xperiods():
     return _query(get_bq_client(), "master_xperiod", order="sort_order")
+
+
+@router.get("/run")
+async def get_run():
+    return _query(get_bq_client(), "master_run", order="run_ts DESC", active_only=False)

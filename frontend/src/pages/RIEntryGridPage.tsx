@@ -13,7 +13,7 @@ import { SCN_TYPES, makeUICellKey } from '../types/ri'
 type CellMap = Map<UICellKey, UICell>
 
 export default function RIEntryGridPage() {
-  const { id } = useParams<{ id: string }>()
+  useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const configId = searchParams.get('config') || ''

@@ -1,7 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import DataGrid, { Column, textEditor } from 'react-data-grid'
-import 'react-data-grid/lib/styles.css'
 import { riApi } from '../api/ri'
 import type { RIScreenConfig } from '../types/ri'
 
@@ -16,18 +14,8 @@ const RI_COLS = [
 
 type GridRow = Record<string, string> & { _id: string }
 
-const GRID_COLUMNS: Column<GridRow>[] = [
-  { key: '_id', name: '#', width: 40, frozen: true },
-  ...RI_COLS.map(col => ({
-    key: col,
-    name: col.toUpperCase(),
-    width: col === 'unit' ? 80 : 70,
-    renderEditCell: textEditor,
-  })),
-]
-
 export default function RIConfigEditorPage() {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
   const isNew = !id
   const [config, setConfig] = useState<Partial<RIScreenConfig>>({
@@ -80,6 +68,18 @@ export default function RIConfigEditorPage() {
     setRows(prev => [...prev, empty])
   }
 
+  const updateCell = useCallback((rowIdx: number, col: string, value: string) => {
+    setRows(prev => {
+      const next = [...prev]
+      next[rowIdx] = { ...next[rowIdx], [col]: value }
+      return next
+    })
+  }, [])
+
+  const deleteRow = (rowIdx: number) => {
+    setRows(prev => prev.filter((_, i) => i !== rowIdx))
+  }
+
   const handleSave = async () => {
     setSaving(true)
     try {
@@ -106,23 +106,23 @@ export default function RIConfigEditorPage() {
   const isSeed = config.is_seed === true
 
   return (
-    <div className="p-4 flex flex-col gap-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 16 }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>
           {isNew ? 'New Config' : `Edit: ${config.config_name}`}
         </h1>
-        <div className="flex gap-2">
+        <div style={{ display: 'flex', gap: 8 }}>
           {isSeed && (
-            <span className="px-2 py-1 bg-gray-200 text-gray-600 rounded text-sm">
-              🔒 Seed
+            <span style={{ padding: '4px 8px', background: '#e5e7eb', color: '#6b7280', borderRadius: 4, fontSize: 13 }}>
+              🔒 Seed (read-only)
             </span>
           )}
           {!isSeed && (
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              style={{ padding: '6px 16px', background: saving ? '#9ca3af' : '#2563eb', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}
             >
               {saving ? 'Saving…' : 'Save'}
             </button>
@@ -130,88 +130,153 @@ export default function RIConfigEditorPage() {
           {!isNew && (
             <button
               onClick={() =>
-                riApi
-                  .cloneConfig(id!, `Copy of ${config.config_name}`)
+                riApi.cloneConfig(id!, `Copy of ${config.config_name}`)
                   .then(c => navigate(`/ri/configs/${c.config_id}`))
               }
-              className="px-4 py-2 border rounded hover:bg-gray-50"
+              style={{ padding: '6px 16px', border: '1px solid #d1d5db', borderRadius: 4, cursor: 'pointer', background: '#fff' }}
             >
               Clone
             </button>
           )}
           <button
             onClick={() => navigate('/ri/configs')}
-            className="px-4 py-2 border rounded"
+            style={{ padding: '6px 16px', border: '1px solid #d1d5db', borderRadius: 4, cursor: 'pointer', background: '#fff' }}
           >
-            Cancel
+            ← Back
           </button>
         </div>
       </div>
 
       {/* Meta fields */}
-      <div className="flex gap-4">
-        <div className="flex-1">
-          <label className="text-sm text-gray-600">Config Name</label>
+      <div style={{ display: 'flex', gap: 16 }}>
+        <div style={{ flex: 1 }}>
+          <label style={{ fontSize: 12, color: '#6b7280', display: 'block', marginBottom: 4 }}>Config Name</label>
           <input
             value={config.config_name || ''}
             onChange={e => setConfig(p => ({ ...p, config_name: e.target.value }))}
             disabled={isSeed}
-            className="w-full border rounded px-2 py-1 mt-1"
+            style={{ width: '100%', border: '1px solid #d1d5db', borderRadius: 4, padding: '4px 8px', boxSizing: 'border-box' }}
           />
         </div>
-        <div>
-          <label className="text-sm text-gray-600">XPeriod codes (comma-separated)</label>
+        <div style={{ flex: 1 }}>
+          <label style={{ fontSize: 12, color: '#6b7280', display: 'block', marginBottom: 4 }}>
+            XPeriod codes (comma-separated)
+          </label>
           <input
             value={xperiodCodes.join(',')}
             onChange={e =>
-              setXperiodCodes(
-                e.target.value
-                  .split(',')
-                  .map(s => s.trim())
-                  .filter(Boolean)
-              )
+              setXperiodCodes(e.target.value.split(',').map(s => s.trim()).filter(Boolean))
             }
             disabled={isSeed}
-            className="w-full border rounded px-2 py-1 mt-1"
             placeholder="M2601,Q2603,Y26"
+            style={{ width: '100%', border: '1px solid #d1d5db', borderRadius: 4, padding: '4px 8px', boxSizing: 'border-box' }}
           />
           {xperiodCodes.length > 10 && (
-            <p className="text-orange-500 text-xs mt-1">
-              ⚠ More than 10 XPeriods (still allowed)
-            </p>
+            <p style={{ color: '#f97316', fontSize: 12, margin: '4px 0 0' }}>⚠ More than 10 XPeriods (still allowed)</p>
           )}
         </div>
       </div>
 
       {rows.length > 30 && (
-        <p className="text-orange-500 text-sm">
+        <p style={{ color: '#f97316', fontSize: 13, margin: 0 }}>
           ⚠ {rows.length} rows — more than recommended 30 (still allowed)
         </p>
       )}
 
-      {/* 44-col react-data-grid — mirrors GSheet RI cols I:BA */}
-      <div style={{ height: 500 }}>
-        <DataGrid
-          columns={GRID_COLUMNS}
-          rows={rows}
-          onRowsChange={setRows}
-          className="rdg-light h-full"
-        />
+      {/* 44-col plain table — mirrors GSheet RI cols I:BA */}
+      <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: 480, border: '1px solid #d1d5db', borderRadius: 4 }}>
+        <table style={{ borderCollapse: 'collapse', fontSize: 12, minWidth: 'max-content' }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, position: 'sticky', top: 0, left: 0, zIndex: 3, background: '#f9fafb', width: 32 }}>#</th>
+              {RI_COLS.map(col => (
+                <th key={col} style={{ ...thStyle, position: 'sticky', top: 0, zIndex: 2, background: '#f9fafb', minWidth: col === 'unit' ? 70 : 60 }}>
+                  {col.toUpperCase()}
+                </th>
+              ))}
+              {!isSeed && (
+                <th style={{ ...thStyle, position: 'sticky', top: 0, zIndex: 2, background: '#f9fafb', width: 40 }}>✕</th>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={RI_COLS.length + 2} style={{ padding: '24px', textAlign: 'center', color: '#9ca3af', fontSize: 13 }}>
+                  No rows yet — click "+ Add Row" or Ctrl+V to paste from GSheet (cols I:BA)
+                </td>
+              </tr>
+            ) : (
+              rows.map((row, ri) => (
+                <tr key={row._id} style={{ background: ri % 2 === 0 ? '#fff' : '#f9fafb' }}>
+                  <td style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', position: 'sticky', left: 0, background: ri % 2 === 0 ? '#fff' : '#f9fafb', zIndex: 1 }}>
+                    {ri + 1}
+                  </td>
+                  {RI_COLS.map(col => (
+                    <td key={col} style={{ ...tdStyle, padding: 0 }}>
+                      <input
+                        type="text"
+                        value={row[col] || ''}
+                        disabled={isSeed}
+                        onChange={e => updateCell(ri, col, e.target.value)}
+                        style={{
+                          width: '100%',
+                          border: 'none',
+                          padding: '3px 5px',
+                          fontSize: 12,
+                          background: 'transparent',
+                          outline: 'none',
+                          minWidth: col === 'unit' ? 70 : 60,
+                        }}
+                        onFocus={e => (e.target.style.background = '#eff6ff')}
+                        onBlur={e => (e.target.style.background = 'transparent')}
+                      />
+                    </td>
+                  ))}
+                  {!isSeed && (
+                    <td style={{ ...tdStyle, textAlign: 'center' }}>
+                      <button
+                        onClick={() => deleteRow(ri)}
+                        style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#ef4444', fontSize: 13 }}
+                        title="Delete row"
+                      >
+                        ✕
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
       {!isSeed && (
-        <div className="flex gap-2">
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <button
             onClick={addRow}
-            className="px-3 py-1 border rounded text-sm hover:bg-gray-50"
+            style={{ padding: '5px 12px', border: '1px solid #d1d5db', borderRadius: 4, cursor: 'pointer', background: '#fff', fontSize: 13 }}
           >
             + Add Row
           </button>
-          <span className="text-sm text-gray-500 self-center">
-            or Ctrl+V to paste from GSheet (cols I:BA)
+          <span style={{ fontSize: 12, color: '#9ca3af' }}>
+            or Ctrl+V to paste from GSheet (cols I:BA) · {rows.length} rows
           </span>
         </div>
       )}
     </div>
   )
+}
+
+const thStyle: React.CSSProperties = {
+  border: '1px solid #e5e7eb',
+  padding: '5px 6px',
+  fontWeight: 600,
+  textAlign: 'left',
+  whiteSpace: 'nowrap',
+}
+
+const tdStyle: React.CSSProperties = {
+  border: '1px solid #e5e7eb',
+  padding: '2px 4px',
 }

@@ -50,6 +50,7 @@ export default function App() {
           <Route path="/ri/configs/new" element={<RIConfigEditorPage />} />
           <Route path="/ri/configs/:id" element={<RIConfigEditorPage />} />
           <Route path="/ri/entries/new" element={<RIEntrySelectorPage />} />
+          <Route path="/ri/entries/create" element={<RIEntryGridPage />} />
           <Route path="/ri/entries/:id" element={<RIEntryGridPage />} />
         </Routes>
       </BrowserRouter>

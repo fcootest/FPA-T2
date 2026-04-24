@@ -22,7 +22,7 @@ export default function RIEntrySelectorPage() {
           <div
             key={cfg.config_id}
             className="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer"
-            onClick={() => navigate(`/ri/entries/new?config=${cfg.config_id}`)}
+            onClick={() => navigate(`/ri/entries/create?config=${cfg.config_id}`)}
           >
             <div>
               <div className="font-medium">{cfg.config_name}</div>

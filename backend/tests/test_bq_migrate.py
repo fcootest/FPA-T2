@@ -79,8 +79,8 @@ class TestEnsureTables:
         expected = {
             "ri_screen_config", "ri_screen_entry",
             "ri_screen_ybfull", "ri_screen_xperiod",
-            "master_cat", "master_pck", "master_src", "master_ff",
-            "master_alt", "master_scn", "master_xperiod",
-            "master_kr_item", "master_filter_item",
+            "ri_master_cat", "ri_master_pck", "ri_master_src", "ri_master_ff",
+            "ri_master_alt", "ri_master_scn", "ri_master_xperiod",
+            "ri_master_kr_item", "ri_master_filter_item",
         }
         assert expected.issubset(set(SCHEMAS.keys()))

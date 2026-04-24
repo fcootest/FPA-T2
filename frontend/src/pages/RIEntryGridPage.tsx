@@ -90,9 +90,14 @@ export default function RIEntryGridPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Header */}
+      {/* Header — BUG-030: show config details */}
       <div className="p-3 border-b flex items-center justify-between bg-white">
-        <div className="font-bold">Config: {template.config.config_name}</div>
+        <div>
+          <div className="font-bold">{template.config.config_name}</div>
+          <div className="text-xs text-gray-400 mt-0.5">
+            {template.config.config_code} · {yb_fulls.length} rows · {xperiods.length} periods · {SCN_TYPES.length} SCN
+          </div>
+        </div>
         <div className="flex gap-2 items-center">
           <span className="text-sm text-gray-500">
             {status}
@@ -161,6 +166,19 @@ export default function RIEntryGridPage() {
       <div className="flex-1 overflow-auto">
         <table className="text-xs border-collapse w-max">
           <thead>
+            {/* BUG-029: SCN block group headers */}
+            <tr>
+              <th colSpan={3} className="sticky left-0 z-10 bg-gray-50 border p-1" />
+              {SCN_TYPES.map(scn => (
+                <th
+                  key={scn}
+                  colSpan={xperiods.length}
+                  className="border p-1 text-center font-semibold bg-gray-100 tracking-wide"
+                >
+                  {scn}
+                </th>
+              ))}
+            </tr>
             <tr>
               {/* Frozen label columns */}
               <th className="sticky left-0 z-10 bg-white border p-2 min-w-[180px]">KRFull</th>
@@ -176,7 +194,6 @@ export default function RIEntryGridPage() {
                     key={`${scn}-${xp.xperiod_code}`}
                     className="border p-2 min-w-[80px] text-center bg-gray-50"
                   >
-                    <div className="text-gray-400 text-[10px] font-normal">{scn}</div>
                     <div>{xp.label || xp.xperiod_code}</div>
                   </th>
                 ))

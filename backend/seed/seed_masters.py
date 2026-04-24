@@ -17,15 +17,15 @@ from backend.seed.masters_data import (
 DATASET = "Config_FPA_T"
 
 MASTER_MAP = {
-    "master_cat":         MASTER_CAT,
-    "master_pck":         MASTER_PCK,
-    "master_src":         MASTER_SRC,
-    "master_ff":          MASTER_FF,
-    "master_alt":         MASTER_ALT,
-    "master_scn":         MASTER_SCN,
-    "master_xperiod":     MASTER_XPERIOD,
-    "master_kr_item":     MASTER_KR_ITEMS,
-    "master_filter_item": MASTER_FILTER_ITEMS,
+    "ri_master_cat":         MASTER_CAT,
+    "ri_master_pck":         MASTER_PCK,
+    "ri_master_src":         MASTER_SRC,
+    "ri_master_ff":          MASTER_FF,
+    "ri_master_alt":         MASTER_ALT,
+    "ri_master_scn":         MASTER_SCN,
+    "ri_master_xperiod":     MASTER_XPERIOD,
+    "ri_master_kr_item":     MASTER_KR_ITEMS,
+    "ri_master_filter_item": MASTER_FILTER_ITEMS,
 }
 
 

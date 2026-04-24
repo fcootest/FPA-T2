@@ -1,33 +1,33 @@
 {
-  "master_cat": [
+  "ri_master_cat": [
     {"code": "PCA", "name": "PCA",      "description": "Passenger Car A",   "is_active": true},
     {"code": "PCB", "name": "PCB",      "description": "Passenger Car B",   "is_active": true},
     {"code": "LCV", "name": "LCV",      "description": "Light Commercial",  "is_active": true}
   ],
-  "master_pck": [
+  "ri_master_pck": [
     {"code": "GH",  "name": "GH",       "description": "Global High",       "is_active": true},
     {"code": "GL",  "name": "GL",       "description": "Global Low",        "is_active": true}
   ],
-  "master_src": [
+  "ri_master_src": [
     {"code": "INT", "name": "Internal", "description": "Internal source",   "is_active": true},
     {"code": "EXT", "name": "External", "description": "External source",   "is_active": true}
   ],
-  "master_ff": [
+  "ri_master_ff": [
     {"code": "MF",  "name": "Monthly",   "description": "Monthly frequency",  "is_active": true},
     {"code": "QF",  "name": "Quarterly", "description": "Quarterly frequency","is_active": true},
     {"code": "HF",  "name": "Half-year", "description": "Half-year frequency","is_active": true},
     {"code": "YF",  "name": "Yearly",    "description": "Yearly frequency",   "is_active": true}
   ],
-  "master_alt": [
+  "ri_master_alt": [
     {"code": "PLA4", "name": "PLA4",    "description": "Plan 4-year",        "is_active": true},
     {"code": "ACT",  "name": "Actual",  "description": "Actual",             "is_active": true}
   ],
-  "master_scn": [
+  "ri_master_scn": [
     {"code": "OPT",  "name": "Optimistic",  "scn_type": "OPT",  "is_active": true},
     {"code": "REAL", "name": "Realistic",   "scn_type": "REAL", "is_active": true},
     {"code": "PESS", "name": "Pessimistic", "scn_type": "PESS", "is_active": true}
   ],
-  "master_xperiod": [
+  "ri_master_xperiod": [
     {"xperiod_code": "M2601", "period_type": "MF", "label": "Jan-26", "sort_order": 1,  "is_active": true},
     {"xperiod_code": "M2602", "period_type": "MF", "label": "Feb-26", "sort_order": 2,  "is_active": true},
     {"xperiod_code": "M2603", "period_type": "MF", "label": "Mar-26", "sort_order": 3,  "is_active": true},
@@ -35,12 +35,12 @@
     {"xperiod_code": "H2601", "period_type": "HF", "label": "H1-26",  "sort_order": 25, "is_active": true},
     {"xperiod_code": "Y26",   "period_type": "YF", "label": "FY-26",  "sort_order": 37, "is_active": true}
   ],
-  "master_kr_item": [
+  "ri_master_kr_item": [
     {"kr_item_code": "VOL",   "level_code": "L1", "name": "Volume",      "is_active": true},
     {"kr_item_code": "REV",   "level_code": "L1", "name": "Revenue",     "is_active": true},
     {"kr_item_code": "EBIT",  "level_code": "L2", "name": "EBIT",        "is_active": true}
   ],
-  "master_filter_item": [
+  "ri_master_filter_item": [
     {"filter_item_code": "ALL",  "level_code": "L0", "name": "All",         "is_active": true},
     {"filter_item_code": "DOM",  "level_code": "L1", "name": "Domestic",    "is_active": true},
     {"filter_item_code": "EXP",  "level_code": "L1", "name": "Export",      "is_active": true}

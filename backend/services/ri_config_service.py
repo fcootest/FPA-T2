@@ -404,13 +404,13 @@ def _load_masters(client: bigquery.Client) -> dict:
         return [dict(r) for r in client.query(q).result()]
 
     return {
-        "CAT_OPTIONS":    _query_master("master_cat"),
-        "PCK_OPTIONS":    _query_master("master_pck"),
-        "SRC_OPTIONS":    _query_master("master_src"),
-        "FF_OPTIONS":     _query_master("master_ff"),
-        "ALT_OPTIONS":    _query_master("master_alt"),
+        "CAT_OPTIONS":    _query_master("ri_master_cat"),
+        "PCK_OPTIONS":    _query_master("ri_master_pck"),
+        "SRC_OPTIONS":    _query_master("ri_master_src"),
+        "FF_OPTIONS":     _query_master("ri_master_ff"),
+        "ALT_OPTIONS":    _query_master("ri_master_alt"),
         "SCN_OPTIONS":    ["OPT", "REAL", "PESS"],
-        "KR_ITEMS":       _query_master("master_kr_item", "level_code"),
-        "FILTER_ITEMS":   _query_master("master_filter_item", "level_code"),
-        "XPERIOD_OPTIONS": _query_master("master_xperiod", "sort_order"),
+        "KR_ITEMS":       _query_master("ri_master_kr_item", "level_code"),
+        "FILTER_ITEMS":   _query_master("ri_master_filter_item", "level_code"),
+        "XPERIOD_OPTIONS": _query_master("ri_master_xperiod", "sort_order"),
     }

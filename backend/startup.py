@@ -17,13 +17,13 @@ SEED_FILE = Path(__file__).parent / "seed" / "data" / "masters.json"
 DATASET = "Config_FPA_T"
 
 _MASTER_TABLES_WITH_CODE_PK = {
-    "master_cat", "master_pck", "master_src", "master_ff",
-    "master_alt", "master_scn",
+    "ri_master_cat", "ri_master_pck", "ri_master_src", "ri_master_ff",
+    "ri_master_alt", "ri_master_scn",
 }
 _MASTER_TABLES_WITH_OTHER_PK = {
-    "master_xperiod": "xperiod_code",
-    "master_kr_item": "kr_item_code",
-    "master_filter_item": "filter_item_code",
+    "ri_master_xperiod": "xperiod_code",
+    "ri_master_kr_item": "kr_item_code",
+    "ri_master_filter_item": "filter_item_code",
 }
 
 

@@ -34,12 +34,12 @@ def _table(client: bigquery.Client, name: str) -> str:
 def _generate_run_code(client: bigquery.Client, created_by: str = "") -> str:
     """
     RUN code format: RUN{YYYY}{MMM}{DD}-{HHMMSS} (AP §5.4).
-    Persists to master_run registry after generation.
+    Persists to ri_master_run registry after generation.
     """
     now = datetime.utcnow()
     run_code = f"RUN{now.year}{now.strftime('%b').upper()}{now.day:02d}-{now:%H%M%S}"
     client.insert_rows_json(
-        _table(client, "master_run"),
+        _table(client, "ri_master_run"),
         [{"run_code": run_code, "run_ts": now.isoformat(), "created_by": created_by}],
     )
     return run_code
